@@ -159,13 +159,13 @@ void DE1SoC_SevenSeg_SetSixDec(unsigned int value) {
 }
 
 void DE1SoC_SevenSeg_SetTimeFast(unsigned int value) {
-	DE1SoC_SevenSeg_SetDoubleDec(0, num % 100);  //hundreth seconds
-	DE1SoC_SevenSeg_SetDoubleDec(2, (num / 100) % 60); //seconds
-	DE1SoC_SevenSeg_SetDoubleDec(4, (num / 6000) % 100); //minutes
+	DE1SoC_SevenSeg_SetDoubleDec(0, value % 100);  //hundreth seconds
+	DE1SoC_SevenSeg_SetDoubleDec(2, (value / 100) % 60); //seconds
+	DE1SoC_SevenSeg_SetDoubleDec(4, (value / 6000) % 100); //minutes
 }
 
 void DE1SoC_SevenSeg_SetTime(unsigned int value) {
-	DE1SoC_SevenSeg_SetDoubleDec(0, num % 60); // seconds
-	DE1SoC_SevenSeg_SetDoubleDec(2, (num / 60) % 60); //minutes
-	DE1SoC_SevenSeg_SetDoubleDec(4, (num / 3600) % 100); // hours
+	DE1SoC_SevenSeg_SetDoubleDec(0, value % 60); // seconds
+	DE1SoC_SevenSeg_SetDoubleDec(2, (value / 60) % 60); //minutes
+	DE1SoC_SevenSeg_SetDoubleDec(4, (value / 3600) % 100); // hours
 }
