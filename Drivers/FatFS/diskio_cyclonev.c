@@ -11,6 +11,7 @@
 // Minimal Altera HWLib for SD-Card (hwlib/)
 #include "hwlib/alt_sdmmc.h"
 #include "hwlib/socal/hps.h"
+
 // C Standard Libs
 #include <stdlib.h>
 #include <stdbool.h>
@@ -191,7 +192,7 @@ DRESULT disk_read (
 	DWORD sector,	/* Start sector in LBA */
 	UINT count		/* Number of sectors to read */
 )
-{
+{	
     unsigned int address = sector * Sdmmc_Sector_Size; //Convert sector to byte address
     unsigned int size = count * Sdmmc_Sector_Size; //Convert sector count to byte size
 

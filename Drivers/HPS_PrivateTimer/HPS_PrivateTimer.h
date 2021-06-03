@@ -19,6 +19,7 @@
 //Error Codes
 #define TIMER_SUCCESS       0
 #define TIMER_ERRORNOINIT  -1
+#define TIMER_ADDRTAKEN    -2
 
 //Function to initialise the HPS Timer
 // - Returns TIMER_SUCCESS if successful
@@ -52,6 +53,9 @@ signed int Timer_readCurrent ( void );
 //returns true if interupt is active and timer stopped
 bool Timer_interuptStatus ( void ) ;
 
+//returns the timer state
+bool Timer_isEnabled(void);
+
 //enables timer
 signed int Timer_enable( void );
 
@@ -61,4 +65,10 @@ signed int Timer_disable( void );
 //resets interupt flag to allow timer to contine
 signed int Timer_resetFlag ( void );
    
+//Returns activtive timer Number
+bool Timer_isAlt( void );
+
+//Swaps to Timer Number
+void Timer_switch(bool alt);
+
 #endif

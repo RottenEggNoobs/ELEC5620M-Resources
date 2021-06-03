@@ -56,11 +56,11 @@ signed int WM8731_initialise ( unsigned int base_address ) {
     if (status != HPS_I2C_SUCCESS) return status;
     status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_ANLGPATHCNTRL<<9) | 0x12); //Use Line In. Disable Bypass. Use DAC
     if (status != HPS_I2C_SUCCESS) return status;
-    status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_DGTLPATHCNTRL<<9) | 0x06); //Enable High-Pass filter. 48kHz sample rate.
+    status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_DGTLPATHCNTRL<<9) | 0x00); //Enable High-Pass filter. 48kHz sample rate <- BOY this is Emphsis
     if (status != HPS_I2C_SUCCESS) return status;
-    status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_DATAFMTCNTRL <<9) | 0x4E); //I2S Mode, 24bit, Master Mode (do not change this!)
+    status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_DATAFMTCNTRL <<9) | 0x4E); //I2S Mode, 16bit, Master Mode (do not change this!)
     if (status != HPS_I2C_SUCCESS) return status;
-    status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_SMPLINGCNTRL <<9) | 0x00); //Normal Mode, 48kHz sample rate
+    status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_SMPLINGCNTRL <<9) | 0x00); //USB Mode, 48kHz sample rate
     if (status != HPS_I2C_SUCCESS) return status;
     status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_ACTIVECNTRL  <<9) | 0x01); //Enable Codec
     if (status != HPS_I2C_SUCCESS) return status;
@@ -79,6 +79,32 @@ bool WM8731_isInitialised() {
     return wm8731_initialised;
 }
 
+signed int WM8731_setSampleRate(unsigned int sampleRate) {
+	signed int status;
+	status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_ACTIVECNTRL  <<9) | 0x00); //Enable Codec
+    if (status != HPS_I2C_SUCCESS) return status;
+	switch (sampleRate) {
+		case 48000:
+			status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_SMPLINGCNTRL <<9) | 0x00); //USB Mode, 48kHz sample rate
+			if (status != HPS_I2C_SUCCESS) return status;
+		break;
+		case 32000:
+			status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_SMPLINGCNTRL <<9) | 0x18); //USB Mode,32kHz sample rate
+			if (status != HPS_I2C_SUCCESS) return status;
+		break;
+		case 8000:
+			status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_SMPLINGCNTRL <<9) | 0x0C); //USB Mode, 8kHz sample rate
+			if (status != HPS_I2C_SUCCESS) return status;
+		break;
+		default:
+			status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_SMPLINGCNTRL <<9) | 0x00); //N Mode, 48kHz sample rate
+			return WM8731_SAMPLEERR;
+	}
+	status = HPS_I2C_write16b(0, 0x1A, (WM8731_I2C_ACTIVECNTRL  <<9) | 0x01); //Enable Codec
+    if (status != HPS_I2C_SUCCESS) return status;
+	return WM8731_SUCCESS;
+}
+		
 //Clears FIFOs
 // - returns true if successful
 signed int WM8731_clearFIFO( bool adc, bool dac) {

@@ -25,6 +25,7 @@
 //Error Codes
 #define WM8731_SUCCESS      0
 #define WM8731_ERRORNOINIT -1
+#define WM8731_SAMPLEERR   -2
 
 //FIFO Space Offsets
 #define WM8731_RARC 0
@@ -54,5 +55,8 @@ volatile unsigned int* WM8731_getLeftFIFOPtr( void );
 
 //Get Right FIFO Address
 volatile unsigned int* WM8731_getRightFIFOPtr( void );
+
+//Set Sample Rate
+signed int WM8731_setSampleRate(unsigned int sampleRate);
 
 #endif /*DE1SoC_WM8731_H_*/

@@ -2,9 +2,12 @@
 
 //Driver Base Addresses
 volatile unsigned int   *timer_base_ptr     = 0x0;  //0xFFFEC600
+unsigned int   timer0_address     = 0x0;  //0xFFFEC600
+unsigned int   timer1_address     = 0x0;  //0xFFFEC600
 
 //Driver Initialised
 bool timer_initialised = false;
+volatile bool timer_alt = false;
 
 //Register Offsets
 #define TIMER_LOAD      (0x00/sizeof(unsigned int))
@@ -14,7 +17,14 @@ bool timer_initialised = false;
 
 //Function to initialise the Timer
 signed int Timer_initialise(unsigned int base_address){
-    //Initialise base address pointers
+    if (Timer_isInitialised()) {
+		if (timer1_address == base_address) return TIMER_ADDRTAKEN;
+		timer1_address = base_address;
+		timer_alt = true;
+	} else {
+		timer0_address = base_address;
+	}
+	//Initialise base address pointers
     timer_base_ptr = (unsigned int *)  base_address;
     //Ensure timer initialises to disabled
     timer_base_ptr[TIMER_CONTROL] = 0;
@@ -23,9 +33,13 @@ signed int Timer_initialise(unsigned int base_address){
     return TIMER_SUCCESS;
 }
 
-//Check if driver initialised
 bool Timer_isInitialised() {
     return timer_initialised;
+}
+
+//Check if driver initialised
+bool Timer_isAlt() {
+    return timer_alt;
 }
 
 //set the register directly
@@ -87,9 +101,27 @@ signed int Timer_disable( void ) {
 	return TIMER_SUCCESS;
 }
 
+//is enabled
+bool Timer_isEnabled(void) {
+	if (!Timer_isInitialised()) return false;
+	return (timer_base_ptr[TIMER_CONTROL] & 0x1);
+}
+	
+void Timer_switch(bool alt) {
+	if (alt != timer_alt) {
+		if(alt) {
+			timer_base_ptr = (unsigned int *)  timer1_address;
+		} else {
+			timer_base_ptr = (unsigned int *)  timer0_address;
+		}
+		timer_alt = alt;
+	}
+}
+
 //reset interupt flag by setting 1
 signed int Timer_resetFlag ( void ) {
 	if (!Timer_isInitialised()) return TIMER_ERRORNOINIT;
 	timer_base_ptr[TIMER_INTERRUPT] = 0x1;
+	timer_base_ptr[3];
 	return TIMER_SUCCESS;
 }	
