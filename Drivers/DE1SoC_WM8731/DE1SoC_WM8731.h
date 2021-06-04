@@ -56,7 +56,7 @@ volatile unsigned int* WM8731_getLeftFIFOPtr( void );
 //Get Right FIFO Address
 volatile unsigned int* WM8731_getRightFIFOPtr( void );
 
-//Set Sample Rate
+//Set Sample Rate new Function (MOD)
 signed int WM8731_setSampleRate(unsigned int sampleRate);
 
 #endif /*DE1SoC_WM8731_H_*/
